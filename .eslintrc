@@ -1,0 +1,21 @@
+{
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "plugins": [
+        "react"        
+    ],
+    "extends": [
+        "airbnb",
+        "plugin:react/recommended"
+    ],
+    "rules": {
+        "no-underscore-dangle": ["error", {"allow":["_id"]}],
+        "no-param-reassign": ["error",{"props": false}],
+        "semi": ["error", "never"]
+    }
+}

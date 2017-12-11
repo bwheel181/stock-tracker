@@ -1,0 +1,67 @@
+import 'babel-polyfill'
+import express from 'express'
+import bodyParser from 'body-parser'
+import { MongoClient, ObjectId } from 'mongodb'
+import SourceMapSupport from 'source-map-support'
+import StockService from './stock_service'
+import { refreshStocks, validateStock } from './utils'
+
+// TODO Add User Authentication and session management
+// TODO Add recent searches specific to logged in users
+
+SourceMapSupport.install()
+const app = express()
+const stockService = new StockService()
+
+let db
+MongoClient.connect('mongodb://localhost/stocktracker').then((conn) => {
+  db = conn
+  app.listen(8080, () => {
+    console.log('App started on port 8080')
+  })
+}).catch((err) => {
+  console.log('ERROR: ', err)
+})
+
+app.use(express.static('static'))
+app.use(bodyParser.json())
+
+app.get('/api/stocks', (req, res) => {
+  const filter = {}
+  if (req.query.price_lte || req.query.price_gte) filter.price = {}
+  if (req.query.price_lte) filter.adj_close.$lte = parseInt(req.query.price_lte, 10)
+  if (req.query.price_gte) filter.adj_close.$gte = parseInt(req.query.price_gte, 10)
+  db.collection('stocks').find(filter).toArray().then((stockList) => {
+    const metadata = { total_count: stockList.length }
+    res.json({metadata: metadata, stockList: stockList, error: null})
+  })
+    .catch((err) => {
+      console.log(err)
+      res.status(500).json({metadata: null, stockList: null, error: err})
+    })
+})
+
+app.post('/api/stocks/', (req, res) => {
+  const ticker = req.body.ticker
+  stockService.getStockData(ticker, ((stockData, err) => {
+    if (err) {
+      res.status(500).json({data: null, err: err})
+      return
+    }
+    db.collection('stocks')
+    .updateOne({
+      ticker: {$regex: new RegExp(ticker, 'i')}}, 
+      stockData, 
+      {upsert: true})
+    .then(updated => {
+      res.json({data: stockData, err: null})
+    })
+    .catch(err => {
+      res.status(500).json({data: null, err: 'SError'})
+    })
+  }))
+})
+
+app.delete('/api/stocks/:id', (req, res) => {
+// TODO
+})

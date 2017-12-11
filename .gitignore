@@ -1,0 +1,4 @@
+npm_modules/
+static/*
+!static/index.html
+dist/
