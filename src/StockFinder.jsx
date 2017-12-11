@@ -8,37 +8,39 @@ export default class StockFinder extends React.Component {
     super(props)
     this.state = {
       currentStockValues: {
-        ticker: '-',
-        open: '-',
-        high: '-',
-        low: '-',
-        close: '-',
-        volume: '-', 
+        ticker: '--',
+        open: '--',
+        high: '--',
+        low: '--',
+        close: '--',
+        volume: '--', 
       },
       watchButton: {
         title: 'Watch',
         style: 'primary'
       },
       dataClassName: 'default',
-      
+      currentState: 'idle'
     }
     this.onClickWatch = this.onClickWatch.bind(this)
     this.resetWatchButton = this.resetWatchButton.bind(this)
     this.setWatchWorking = this.setWatchWorking.bind(this)
     this.timeoutId = undefined
-    this.throttled = false
   }
   
   setWatchFeedback(err, data) {
     let watchStyle
     let watchTitle
+    let currentState
     this.timeoutId = setTimeout(this.resetWatchButton, 1500)
     if (err) {
       watchStyle = 'danger'
       watchTitle = err
+      currentState = 'error'
     } else {
       watchStyle = 'success'
       watchTitle = 'Success!'
+      currentState = 'success'
     }
     this.setState({
       watchButton: {
@@ -54,6 +56,7 @@ export default class StockFinder extends React.Component {
           volume: data ? data.adj_volume : 'Err',
       },
       dataClassName: 'data-success',
+      currentState: currentState,
     })
   }
   
@@ -62,7 +65,8 @@ export default class StockFinder extends React.Component {
       watchButton: {
         style: 'default',
         title: 'Working...',
-      }
+      },
+      currentState: 'working'
     })
   }
   
@@ -72,16 +76,16 @@ export default class StockFinder extends React.Component {
         style: 'primary',
         title: 'Watch',
       },
-      dataClassName: 'data-default'
+      dataClassName: 'data-default',
+      currentState: 'idle'
     })
   }
   
   onClickWatch() {
     clearTimeout(this.timeoutId)
-    if (this.throttled) {
+    if (this.state.currentState === 'working') {
       return
     }
-    this.throttled = true
     this.setWatchWorking()
     const ticker = this.stockWatch.value
     fetch('/api/stocks', {
@@ -91,7 +95,6 @@ export default class StockFinder extends React.Component {
     }).then((response) => {
       response.json().then(parsedRes => {
         this.setWatchFeedback(parsedRes.err, parsedRes.data)
-        this.throttled = false
       })
     })
     .catch(err => {

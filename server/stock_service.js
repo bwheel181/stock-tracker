@@ -1,11 +1,13 @@
 import 'babel-polyfill'
+import { apiKey } from './config'
 const fetch = require('node-fetch')
 
-// TODO Error handling
+// TODO Better error handling
+// TODO More services?
+// TODO Clean up code
 
 class QuandlDataFetcher {
   constructor(date) {
-    this.apiKey = 'Z6ujeVLxHPsv4Ec_Zw7f'
     this.baseUrl = 'https://www.quandl.com/api/v3/datasets/WIKI/'
     this.date = date || new Date()
     this.dataParser = new QuandlDataParser()
@@ -16,7 +18,8 @@ class QuandlDataFetcher {
     const day = this.date.getDate()
     const year = this.date.getFullYear()
     const datePart = `${year}-${month + 1}-${day}`
-    fetch(`${this.baseUrl}${ticker}.json?rows=1`)
+    console.log(`${this.baseUrl}${ticker}.json?rows=1&api_key=${apiKey}`)
+    fetch(`${this.baseUrl}${ticker}.json?rows=1&api_key=${apiKey}`)
     .then(response => {
       const timeoutID = setTimeout(() => {
         dataParser.parseData(null, done, 'Timeout')

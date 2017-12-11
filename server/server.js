@@ -4,10 +4,10 @@ import bodyParser from 'body-parser'
 import { MongoClient, ObjectId } from 'mongodb'
 import SourceMapSupport from 'source-map-support'
 import StockService from './stock_service'
-import { refreshStocks, validateStock } from './utils'
 
 // TODO Add User Authentication and session management
 // TODO Add recent searches specific to logged in users
+// TODO Better error handlin
 
 SourceMapSupport.install()
 const app = express()
