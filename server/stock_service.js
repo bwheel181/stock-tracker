@@ -15,8 +15,8 @@ class QuandlDataFetcher {
     const month = this.date.getMonth()
     const day = this.date.getDate()
     const year = this.date.getFullYear()
-    const datePart = `${year}-${month + 1}-${day - 3}`
-    fetch(`${this.baseUrl}${ticker}.json?&start_date=${datePart}&end_date=${datePart}&api_key=${this.apiKey}`)
+    const datePart = `${year}-${month + 1}-${day}`
+    fetch(`${this.baseUrl}${ticker}.json?rows=1`)
     .then(response => {
       const timeoutID = setTimeout(() => {
         dataParser.parseData(null, done, 'Timeout')
@@ -37,6 +37,7 @@ class QuandlDataFetcher {
 
 class QuandlDataParser {
   parseData(data, done, err) {
+    console.log(data)
     if (!data || err) {
       done(null, err)
       return
