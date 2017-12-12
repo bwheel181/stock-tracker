@@ -18,7 +18,7 @@ This is a simple Node application that uses an external free to use API to track
 - [ ] Add refreshing of stocks over a day old
 - [ ] Add delete ability
 - [ ] Add detail view
-- [ ] Add reports view
+- [ ] Add reports with D3 charting
 - [ ] Add 'Search' functionality to the finder page
 - [ ] Improve stock service
 
@@ -26,5 +26,5 @@ This is a simple Node application that uses an external free to use API to track
 - [ ] Clean up and polish code
 - [ ] Fix minor bugs
 - [ ] Linter run-through
-- [ ] Mark close with 'green' if above open and 'red' if below open
+- [x] Mark close with 'green' if above open and 'red' if below open
 - [x] Change volume number to 'comma'd' number
