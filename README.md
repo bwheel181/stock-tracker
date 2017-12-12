@@ -6,6 +6,12 @@
 and Express. Quandl is used for the free stock data. The API not perfect I've found and some stock tickers are not available but
 its good for a free quoter.<p>
   
+<h3>Proprietary Tech</h3>
+<ul>
+  <li>Stock-Service</li>
+  <li>QueryMutator</li>
+</ul>
+  
 <h3>Third Party Tech</h3>
 <ul>
   <li>Bootstrap/React-Bootstrap</li>
