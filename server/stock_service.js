@@ -9,7 +9,16 @@ const fetch = require('node-fetch')
 // The StockService class should implement a simple interface:
 //   Interface {
 //     getStockData(tickerSymbol, callback(data, err))      
-//   {    
+//   {
+// 
+// The data obj sould take the minimum form: 
+//   { lastRefreshed: Date,
+//     ticker: string,
+//     adj_open: number,
+//     adj_high: number,
+//     adj_low: number,
+//     adj_close: number,
+//     adj_volume: number }
 //
 // This ensures dependency inversion, and if this moves to Typescript the above
 // interface should be implemented accordingly
@@ -25,7 +34,6 @@ class QuandlDataFetcher {
     const day = this.date.getDate()
     const year = this.date.getFullYear()
     const datePart = `${year}-${month + 1}-${day}`
-    console.log(`${this.baseUrl}${ticker}.json?rows=1&api_key=${apiKey}`)
     fetch(`${this.baseUrl}${ticker}.json?rows=1&api_key=${apiKey}`)
     .then(response => {
       const timeoutID = setTimeout(() => {
@@ -63,6 +71,7 @@ class QuandlDataParser {
       obj[key] = value
       obj.ticker = data.dataset.dataset_code
     }
+    console.log(obj)
     if (!obj) {
       err = 'Bad Symbol'
     }
