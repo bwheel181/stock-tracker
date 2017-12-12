@@ -8,18 +8,17 @@ export default class StockFinder extends React.Component {
     super(props)
     this.state = {
       currentStockValues: {
-        ticker: '--',
-        open: '--',
-        high: '--',
-        low: '--',
-        close: '--',
-        volume: '--', 
+        ticker: '',
+        open: '',
+        high: '',
+        low: '',
+        close: '',
+        volume: '', 
       },
       watchButton: {
         title: 'Watch',
         style: 'primary'
       },
-      dataClassName: 'default',
       currentState: 'idle'
     }
     this.onClickWatch = this.onClickWatch.bind(this)
@@ -55,7 +54,6 @@ export default class StockFinder extends React.Component {
           close: data ? data.adj_close : 'Err',
           volume: data ? data.adj_volume : 'Err',
       },
-      dataClassName: 'data-success',
       currentState: currentState,
     })
   }
@@ -76,7 +74,6 @@ export default class StockFinder extends React.Component {
         style: 'primary',
         title: 'Watch',
       },
-      dataClassName: 'data-default',
       currentState: 'idle'
     })
   }
@@ -134,7 +131,6 @@ export default class StockFinder extends React.Component {
               low={this.state.currentStockValues.low}
               close={this.state.currentStockValues.close}
               volume={this.state.currentStockValues.volume}
-              dataClassName={this.state.dataClassName}
             />
           </Col>
         </Row>
@@ -149,20 +145,20 @@ const StockInfo = (props) => (
         <tr>
           <th>Ticker</th>
           <th>Open</th>
-          <th>High</th>
-          <th>Low</th>
           <th>Close</th>
+          <th>Low</th>
+          <th>Hi</th>
           <th>Volume</th>
         </tr>
       </thead>
       <tbody>
-        <tr className={props.dataClassName}>
-          <td>{props.ticker}</td>
+        <tr>
+          <td className={props.open > props.close ? 'red-font' : 'green-font'}>{props.ticker}</td>
           <td>{props.open}</td>
+          <td className={props.open > props.close ? 'red-font' : 'green-font'}>{props.close}</td>
           <td>{props.high}</td>
           <td>{props.low}</td>
-          <td>{props.close}</td>
-          <td>{props.volume}</td>
+          <td>{props.volume.toLocaleString()}</td>
         </tr>
       </tbody>
     </Table>

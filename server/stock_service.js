@@ -71,7 +71,6 @@ class QuandlDataParser {
       obj[key] = value
       obj.ticker = data.dataset.dataset_code
     }
-    console.log(obj)
     if (!obj) {
       err = 'Bad Symbol'
     }
