@@ -8,12 +8,12 @@ export default class StockFinder extends React.Component {
     super(props)
     this.state = {
       currentStockValues: {
-        ticker: '',
-        open: '',
-        high: '',
-        low: '',
-        close: '',
-        volume: '', 
+        ticker: '--',
+        open: 0,
+        high: 0,
+        low: 0,
+        close: 0,
+        volume: 0, 
       },
       watchButton: {
         title: 'Watch',
@@ -147,17 +147,17 @@ const StockInfo = (props) => (
           <th>Open</th>
           <th>Close</th>
           <th>Low</th>
-          <th>Hi</th>
+          <th>High</th>
           <th>Volume</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td className={props.open > props.close ? 'red-font' : 'green-font'}>{props.ticker}</td>
-          <td>{props.open}</td>
-          <td className={props.open > props.close ? 'red-font' : 'green-font'}>{props.close}</td>
-          <td>{props.high}</td>
-          <td>{props.low}</td>
+          <td>{props.open.toFixed(2)}</td>
+          <td className={props.open > props.close ? 'red-font' : 'green-font'}>{props.close.toFixed(2)}</td>
+          <td>{props.high.toFixed(2)}</td>
+          <td>{props.low.toFixed(2)}</td>
           <td>{props.volume.toLocaleString()}</td>
         </tr>
       </tbody>
