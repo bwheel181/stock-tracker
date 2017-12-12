@@ -74,14 +74,14 @@ const StockRow = (props) => {
   }
 
   return (
-    <tr>
-      <td className={props.stock.open > props.stock.close ? 'red-font' : 'green-font'}>{props.stock.ticker}</td>
+    <tr className={props.stock.open > props.stock.close ? 'red-font' : 'green-font'}>
+      <td>{props.stock.ticker}</td>
       <td>${props.stock.open.toFixed(2)}</td>
-      <td className={props.stock.open > props.stock.close ? 'red-font' : 'green-font'}>${props.stock.close.toFixed(2)}</td>
+      <td>${props.stock.close.toFixed(2)}</td>
       <td>${props.stock.high.toFixed(2)}</td>
       <td>${props.stock.low.toFixed(2)}</td>
       <td>{props.stock.volume.toLocaleString()}</td>
-      <td><button bssize="xsmall" onClick={onDeleteClick}><Glyphicon glyph="trash" /></button></td>
+      <td><button bssize="xsmall" onClick={onDeleteClick}><Glyphicon className="trash-icon" glyph="trash" /></button></td>
     </tr>
   )
 }

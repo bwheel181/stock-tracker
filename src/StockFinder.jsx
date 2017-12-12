@@ -152,10 +152,10 @@ const StockInfo = (props) => (
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td className={props.open > props.close ? 'red-font' : 'green-font'}>{props.ticker}</td>
+        <tr className={props.open > props.close ? 'red-font' : 'green-font'}>
+          <td>{props.ticker}</td>
           <td>{props.open.toFixed(2)}</td>
-          <td className={props.open > props.close ? 'red-font' : 'green-font'}>{props.close.toFixed(2)}</td>
+          <td>{props.close.toFixed(2)}</td>
           <td>{props.high.toFixed(2)}</td>
           <td>{props.low.toFixed(2)}</td>
           <td>{props.volume.toLocaleString()}</td>
