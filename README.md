@@ -28,7 +28,7 @@ its good for a free quoter.<p>
   <li>Add delete ability</li>
   <li>Add detail view</li>
   <li>Add reports view</li>
-  <li>Imporove stock service</li>
+  <li>Improve stock service</li>
 </ul>
 
 <h3>Minor TODOS</h3>
