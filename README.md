@@ -28,6 +28,7 @@ its good for a free quoter.<p>
   <li>Add delete ability</li>
   <li>Add detail view</li>
   <li>Add reports view</li>
+  <li>Add 'Search' functionality to the finder page</li>
   <li>Improve stock service</li>
 </ul>
 
@@ -36,4 +37,5 @@ its good for a free quoter.<p>
   <li>Clean up and polish code</li>
   <li>Fix minor bugs</li>
   <li>Linter run-through</li>
+  <li>Mark close with 'green' if above open and 'red' if below open</li>
 </ul>
