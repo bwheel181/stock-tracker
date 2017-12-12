@@ -38,4 +38,5 @@ its good for a free quoter.<p>
   <li>Fix minor bugs</li>
   <li>Linter run-through</li>
   <li>Mark close with 'green' if above open and 'red' if below open</li>
+  <li>Cahnge volume number to 'comma'd' number</li>
 </ul>
