@@ -3,16 +3,16 @@
 This is a simple Node application that uses an external free to use API to track selected stock values in a Mongo DB using React and Express. Quandl is used for the free stock data. The API not perfect I've found and some stock tickers are not available but its good for a free quoter.
   
 **Proprietary Tech**
-- [ ] StockService
-- [ ] QueryMutator
+- StockService
+- QueryMutator
   
 **Third Party Tech**
-- [ ] Babel
-- [ ] Webpack
-- [ ] ESLint
-- [ ] Bootstrap/React-Bootstrap
-- [ ] Quandl Free API
-- [ ] MERN stack
+- Babel
+- Webpack
+- ESLint
+- Bootstrap/React-Bootstrap
+- Quandl Free API
+- MERN stack
 
 **Major TODOS**
 - [ ] Add refreshing of stocks over a day old
