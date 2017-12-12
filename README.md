@@ -18,5 +18,5 @@ its good for a free quoter.<p>
 <h3>Minor TODOS</h3>
 <ul>
   <li>Clean up and polish code</li>
-  <li>Fix minor bugs<li>
+  <li>Fix minor bugs</li>
 </ul>
