@@ -2,3 +2,4 @@ npm_modules/
 static/*
 !static/index.html
 dist/
+server/config.js

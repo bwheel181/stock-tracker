@@ -6,11 +6,18 @@ const fetch = require('node-fetch')
 // TODO More services?
 // TODO Clean up code
 
+// The StockService class should implement a simple interface:
+//   Interface {
+//     getStockData(tickerSymbol, callback(data, err))      
+//   {    
+//
+// This ensures dependency inversion, and if this moves to Typescript the above
+// interface should be implemented accordingly
+
 class QuandlDataFetcher {
   constructor(date) {
     this.baseUrl = 'https://www.quandl.com/api/v3/datasets/WIKI/'
     this.date = date || new Date()
-    this.dataParser = new QuandlDataParser()
   }
   
   getData(ticker, dataParser, done) {
@@ -40,7 +47,6 @@ class QuandlDataFetcher {
 
 class QuandlDataParser {
   parseData(data, done, err) {
-    console.log(data)
     if (!data || err) {
       done(null, err)
       return

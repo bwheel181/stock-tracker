@@ -7,7 +7,7 @@ import StockService from './stock_service'
 
 // TODO Add User Authentication and session management
 // TODO Add recent searches specific to logged in users
-// TODO Better error handlin
+// TODO Better error handling
 
 SourceMapSupport.install()
 const app = express()
