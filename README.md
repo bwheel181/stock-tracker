@@ -14,6 +14,9 @@ its good for a free quoter.<p>
   
 <h3>Third Party Tech</h3>
 <ul>
+  <li>Babel</li>
+  <li>Webpack</li>
+  <li>ESLint</li>
   <li>Bootstrap/React-Bootstrap</li>
   <li>Quandl Free API</li>
   <li>MERN stack</li>
@@ -32,4 +35,5 @@ its good for a free quoter.<p>
 <ul>
   <li>Clean up and polish code</li>
   <li>Fix minor bugs</li>
+  <li>Linter run-through</li>
 </ul>
