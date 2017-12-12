@@ -47,7 +47,7 @@ export default class StockList extends React.Component {
 
 
   deleteStock(ticker) {
-    // TODO
+    console.error("Not implemented")
   }
 
   render() {
@@ -61,7 +61,7 @@ export default class StockList extends React.Component {
         </Panel>
         <StockTable
           stocks={this.state.stockList}
-          deleteStock={this.deleteIssue}
+          deleteStock={this.deleteStock}
         />
       </div>
     )
@@ -88,7 +88,7 @@ const StockRow = (props) => {
 
 function StockTable(props) {
   const stockRows = props.stocks.map(stock =>
-    <StockRow key={stock._id} stock={stock} deleteIssue={props.deleteStock} />)
+    <StockRow key={stock._id} stock={stock} deleteStock={props.deleteStock} />)
   return (
     <Table bordered condensed hover responsive>
       <thead>
