@@ -32,5 +32,6 @@ This is a simple Node application that uses an external free to use API to track
 - [ ] Fix minor bugs
 - [ ] Linter run-through
 - [ ] Improve stock service
+- [ ] Move `StockFinder`
 - [x] Mark close with 'green' if above open and 'red' if below open
 - [x] Change volume number to 'comma'd' number
