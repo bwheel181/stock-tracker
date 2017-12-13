@@ -24,6 +24,7 @@ This is a simple Node application that uses an external free to use API to track
 - [ ] Add reports with D3 charting
 - [ ] Add 'Search' functionality to the finder page
 - [ ] Improve stock service
+- [ ] Add filter functionality
 
 **Minor TODOS**
 - [ ] Clean up and polish code
