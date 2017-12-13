@@ -25,6 +25,7 @@ This is a simple Node application that uses an external free to use API to track
 - [ ] 'Search' functionality to the finder page
 - [ ] Filter functionality
 - [ ] Session management/User authentication
+- [ ] Allow user to customize what stock information fields are available
 
 **Minor TODOS**
 - [ ] Clean up and polish code
