@@ -24,7 +24,7 @@ This is a simple Node application that uses an external free to use API to track
 - [ ] Reports with D3 charting
 - [ ] 'Search' functionality to the finder page
 - [ ] Improve stock service
-- [ ] Rilter functionality
+- [ ] Filter functionality
 - [ ] Session management/User authentication
 
 **Minor TODOS**
