@@ -1,4 +1,5 @@
 import 'whatwg-fetch'
+import classNames from 'classnames'
 import React from 'react'
 import StockFilter from './StockFilter'
 import { stringify } from '../util/QueryMutator'
@@ -10,6 +11,7 @@ export default class StockList extends React.Component {
     super()
     this.state = { 
       stockList: [],
+      classNames: classNames()
     }
     this.setFilter = this.setFilter.bind(this)
     this.deleteStock = this.deleteStock.bind(this)
@@ -35,7 +37,6 @@ export default class StockList extends React.Component {
   }
 
   loadData() {
-    console.log("Calling")
     fetch(`/api/stocks${this.props.location.search}`).then((response) => {
       if (response.ok) {
         response.json().then((data) => {
@@ -76,9 +77,14 @@ const StockRow = (props) => {
   function onDeleteClick() {
     props.deleteStock(props.stock.ticker)
   }
+  
+  const classes = classNames({
+    'red-font': props.stock.open > props.stock.close,
+    'green-font': props.stock.open < props.stock.close,
+  })
 
   return (
-    <tr className={props.stock.open > props.stock.close ? 'red-font' : 'green-font'}>
+    <tr className={classes}>
       <td>{props.stock.ticker}</td>
       <td>${props.stock.open.toFixed(2)}</td>
       <td>${props.stock.close.toFixed(2)}</td>
@@ -93,20 +99,23 @@ const StockRow = (props) => {
 function StockTable(props) {
   const stockRows = props.stocks.map(stock =>
     <StockRow key={stock._id} stock={stock} deleteStock={props.deleteStock} />)
+  
   return (
-    <Table bordered condensed hover responsive>
-      <thead>
-        <tr>
-          <th>Ticker</th>
-          <th>Open</th>
-          <th>Close</th>
-          <th>Low</th>
-          <th>High</th>
-          <th>Volume</th>
-          <th />
-        </tr>
-      </thead>
-      <tbody>{stockRows}</tbody>
-    </Table>
+    <div className="main-table">
+      <Table bordered condensed hover responsive>
+        <thead>
+          <tr>
+            <th>Ticker</th>
+            <th>Open</th>
+            <th>Close</th>
+            <th>Low</th>
+            <th>High</th>
+            <th>Volume</th>
+            <th />
+          </tr>
+        </thead>
+        <tbody>{stockRows}</tbody>
+      </Table>
+    </div>
   )
 }

@@ -37,7 +37,7 @@ export default class StockFilter extends React.Component {
 
   onChangePriceLte(e) {
     const effortString = e.target.value
-    if (effortString.match()) {
+    if (effortString.match(/\d*\.?\d*$/)) {
       this.setState({ price_lte: e.target.value, changed: true })
     }
   }
