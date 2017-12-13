@@ -23,7 +23,6 @@ This is a simple Node application that uses an external free to use API to track
 - [ ] Detail view
 - [ ] Reports with D3 charting
 - [ ] 'Search' functionality to the finder page
-- [ ] Improve stock service
 - [ ] Filter functionality
 - [ ] Session management/User authentication
 
@@ -31,5 +30,6 @@ This is a simple Node application that uses an external free to use API to track
 - [ ] Clean up and polish code
 - [ ] Fix minor bugs
 - [ ] Linter run-through
+- [ ] Improve stock service
 - [x] Mark close with 'green' if above open and 'red' if below open
 - [x] Change volume number to 'comma'd' number
