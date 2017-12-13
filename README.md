@@ -25,6 +25,7 @@ This is a simple Node application that uses an external free to use API to track
 - [ ] 'Search' functionality to the finder page
 - [ ] Improve stock service
 - [ ] Rilter functionality
+- [ ] Session management/User authentication
 
 **Minor TODOS**
 - [ ] Clean up and polish code
