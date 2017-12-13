@@ -3,6 +3,7 @@ import React from 'react'
 import StockFilter from './StockFilter'
 import { stringify } from '../util/QueryMutator'
 import { Glyphicon, Table, Panel } from 'react-bootstrap'
+import StockFinder from './StockFinder'
 
 export default class StockList extends React.Component {
   constructor() {
@@ -12,6 +13,7 @@ export default class StockList extends React.Component {
     }
     this.setFilter = this.setFilter.bind(this)
     this.deleteStock = this.deleteStock.bind(this)
+    this.loadData = this.loadData.bind(this)
   }
 
   componentDidMount() {
@@ -33,6 +35,7 @@ export default class StockList extends React.Component {
   }
 
   loadData() {
+    console.log("Calling")
     fetch(`/api/stocks${this.props.location.search}`).then((response) => {
       if (response.ok) {
         response.json().then((data) => {
@@ -63,6 +66,7 @@ export default class StockList extends React.Component {
           stocks={this.state.stockList}
           deleteStock={this.deleteStock}
         />
+        <StockFinder onAddStock={this.loadData}/>
       </div>
     )
   }

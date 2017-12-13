@@ -13,9 +13,6 @@ const Header = () => (
       <Navbar.Brand>Stock Tracker</Navbar.Brand>
     </Navbar.Header>
     <Nav>
-      <LinkContainer to="/finder">
-        <NavItem>Finder</NavItem>
-      </LinkContainer>
       <LinkContainer to="/watcher">
         <NavItem>Watcher</NavItem>
       </LinkContainer>
@@ -55,8 +52,7 @@ const RoutedApp = () => (
     <div>
       <App>
         <Switch>
-          <Route exact path="/" component={StockFinder} />
-          <Route path="/finder" component={StockFinder} />
+          <Route exact path="/" component={StockList} />
           <Route path="/watcher" component={StockList} />
         </Switch>
       </App>

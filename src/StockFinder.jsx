@@ -40,6 +40,7 @@ export default class StockFinder extends React.Component {
       watchStyle = 'success'
       watchTitle = 'Success!'
       currentState = 'success'
+      this.props.onAddStock()
     }
     this.setState({
       watchButton: {

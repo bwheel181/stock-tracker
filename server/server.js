@@ -63,5 +63,5 @@ app.post('/api/stocks/', (req, res) => {
 })
 
 app.delete('/api/stocks/:id', (req, res) => {
-// TODO
+  console.log(req.params.id)
 })
