@@ -18,13 +18,13 @@ This is a simple Node application that uses an external free to use API to track
 - MERN stack
 
 **Major TODOS**
-- [ ] Add refreshing of stocks over a day old
-- [ ] Add delete ability
-- [ ] Add detail view
-- [ ] Add reports with D3 charting
-- [ ] Add 'Search' functionality to the finder page
+- [ ] Refreshing of stocks over a day old
+- [ ] Delete ability
+- [ ] Detail view
+- [ ] Reports with D3 charting
+- [ ] 'Search' functionality to the finder page
 - [ ] Improve stock service
-- [ ] Add filter functionality
+- [ ] Rilter functionality
 
 **Minor TODOS**
 - [ ] Clean up and polish code
