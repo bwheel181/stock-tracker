@@ -1,3 +1,4 @@
+/*global fetch */
 import 'whatwg-fetch'
 import 'classnames'
 import classNames from 'classnames'
@@ -51,7 +52,7 @@ export default class StockList extends React.Component {
   }
 
   deleteStock(ticker) {
-    console.error("Not implemented")
+    console.log("Not implemented")
   }
 
   render() {
@@ -93,7 +94,13 @@ const StockRow = (props) => {
       <td>${props.stock.high.toFixed(2)}</td>
       <td>${props.stock.low.toFixed(2)}</td>
       <td>{props.stock.volume.toLocaleString()}</td>
-      <td><button bssize="xsmall" onClick={onDeleteClick}><Glyphicon className="trash-icon" glyph="trash" /></button></td>
+      <td>
+        <button 
+          bssize="xsmall" 
+          onClick={onDeleteClick}>
+            <Glyphicon className="trash-icon" glyph="trash" />
+        </button>
+      </td>
     </tr>
   )
 }

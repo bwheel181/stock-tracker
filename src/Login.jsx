@@ -1,3 +1,4 @@
+/*global fetch */
 import 'whatwg-fetch'
 import React from 'react'
 import { Panel, FormControl, Form, ControlLabel, FormGroup, Col, Button } from 'react-bootstrap'

@@ -14,8 +14,9 @@ export default class StockFinder extends React.Component {
       watchFetchTimeoutId: undefined,
       searchFetchTimeoutId: undefined,
       tickerInputValue: '',
-      stock: null,
       wasLastSearchSuccess: undefined,
+      stock: null,
+      
     }
     // this.onClickWatch = this.onClickWatch.bind(this)
     // this.handleWatchResponse = this.handleWatchResponse.bind(this)
