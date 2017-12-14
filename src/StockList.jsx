@@ -50,7 +50,6 @@ export default class StockList extends React.Component {
     })
   }
 
-
   deleteStock(ticker) {
     console.error("Not implemented")
   }

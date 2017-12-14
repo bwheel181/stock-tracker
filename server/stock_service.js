@@ -2,90 +2,122 @@ import 'babel-polyfill'
 import { apiKey } from './config'
 const fetch = require('node-fetch')
 
-// TODO Better error handling
-// TODO More services?
-// TODO Clean up code
-
 // The StockService class should implement a simple interface:
 //   Interface {
 //     getStockData(tickerSymbol, callback(data, err))      
 //   {
 // 
 // The data obj sould take the minimum form: 
-//   { lastRefreshed: Date,
+//   { lastRefresh: Date,
 //     ticker: string,
 //     adj_open: number,
 //     adj_high: number,
 //     adj_low: number,
 //     adj_close: number,
 //     adj_volume: number }
+//  
+// The err obj should be of the form
+//   { status: number, message: string }
 //
 // This ensures dependency inversion, and if this moves to Typescript the above
 // interface should be implemented accordingly
 
 class QuandlDataFetcher {
-  constructor(date) {
+  constructor() {
     this.baseUrl = 'https://www.quandl.com/api/v3/datasets/WIKI/'
-    this.date = date || new Date()
   }
   
-  getData(ticker, dataParser, done) {
-    const month = this.date.getMonth()
-    const day = this.date.getDate()
-    const year = this.date.getFullYear()
-    const datePart = `${year}-${month + 1}-${day}`
+  getLatestData(ticker, dataParser, done) {
+    let err = null
+    let data = null
     fetch(`${this.baseUrl}${ticker}.json?rows=1&api_key=${apiKey}`)
-    .then(response => {
-      const timeoutID = setTimeout(() => {
-        dataParser.parseData(null, done, 'Timeout')
-        return
-      }, 3000)
-      let err = null
-      if (!response.ok) {
-        err = 'Bad Symbol'
-      }
-      response.json().then(jsonData => {
-        dataParser.parseData(jsonData, done, err)
-        clearTimeout(timeoutID)
+      .then((res) => {
+        if (!res.ok) return { networkErr: res.statusText, status: res.status }
+        return res.json()
+      }).then((json) => {
+        if (json.networkErr) err = { status: json.status, message: json.networkErr }
+        if (json.quandl_error) err = { status: 404, message: `Incorrect ticker: ${ticker}` }
+        if (json.dataset) data = dataParser.parse(json.dataset)
+        done(data, err)
+      }).catch((netErr) => {
+        err = { status: 500, message: `Network error: ${netErr}` }
+        done(data, err)
       })
-
-    })
   }
 }
 
 class QuandlDataParser {
-  parseData(data, done, err) {
-    if (!data || err) {
-      done(null, err)
-      return
-    }
-    
-    const dataValues = data.dataset.data[0]
-    const dataKeys = data.dataset.column_names
+  parse(data) {
     const obj = {}
-    obj.lastRefreshed = new Date()
-    for (let i = 0; i < dataKeys.length; i++) {
-      let key = dataKeys[i]
-      key = key.replace('.', '').replace('-', '_').replace(' ', '_').toLowerCase()
-      const value = dataValues[i]
-      obj[key] = value
-      obj.ticker = data.dataset.dataset_code
+    const keys = data.column_names
+    const values = data.data[0]
+    const len = keys.length
+    for (let i = 0; i < len; i += 1) {
+      let key = keys[i].replace('.', '').replace('-', '_').replace(' ', '_').toLowerCase()
+      obj[key] = values[i]
     }
-    if (!obj) {
-      err = 'Bad Symbol'
-    }
-    done(obj, err)
+    obj.ticker = data.dataset_code
+    obj.lastRefresh = data.newest_available_date
+    return obj
   }
 }
-
 
 export default class StockService {
   constructor() {
-    this.dataFetcher = new QuandlDataFetcher()
+    this.latestDataFetcher = new QuandlDataFetcher()
     this.dataParser = new QuandlDataParser()
   }
   
-  getStockData(ticker, done) {
-    this.dataFetcher.getData(ticker, this.dataParser, done)
+  getLatestStockData(ticker, done) {
+    this.latestDataFetcher.getLatestData(ticker, this.dataParser, done)
   }
 }
+
+// Data structure for Quandl API
+// { id: 9775687,
+//   dataset_code: 'FB',
+//   database_code: 'WIKI',
+//   name: 'Facebook Inc. (FB) Prices, Dividends, Splits and Trading Volume',
+//   description: 'End of day open, high, low, close and volume, dividends and splits, and split/dividend adjusted open, high, low close and volume for Facebook, Inc. (FB). Ex-Dividend is non-zero on ex-dividend dates. Split Ratio is 1 on non-split dates. Adjusted prices are calculated per CRSP (www.crsp.com/products/documentation/crsp-calculations)\n\nThis data is in the public domain. You may copy, distribute, disseminate or include the data in other products for commercial and/or noncommercial purposes.\n\nThis data is part of Quandl\'s Wiki initiative to get financial data permanently into the public domain. Quandl relies on users like you to flag errors and provide data where data is wrong or missing. Get involved: connect@quandl.com\n',
+//   refreshed_at: '2017-12-13T22:47:25.923Z',
+//   newest_available_date: '2017-12-13',
+//   oldest_available_date: '2012-05-18',
+//   column_names: 
+//   [ 'Date',
+//     'Open',
+//     'High',
+//     'Low',
+//     'Close',
+//     'Volume',
+//     'Ex-Dividend',
+//     'Split Ratio',
+//     'Adj. Open',
+//     'Adj. High',
+//     'Adj. Low',
+//     'Adj. Close',
+//     'Adj. Volume' ],
+//   frequency: 'daily',
+//   type: 'Time Series',
+//   premium: false,
+//   limit: 1,
+//   transform: null,
+//   column_index: null,
+//   start_date: '2012-05-18',
+//   end_date: '2017-12-13',
+//   data: 
+//   [ [ '2017-12-13',
+//       177.3,
+//       179.16,
+//       177.25,
+//       178.3,
+//       14406776,
+//       0,
+//       1,
+//       177.3,
+//       179.16,
+//       177.25,
+//       178.3,
+//       14406776 ] ],
+//   collapse: null,
+//   order: null,
+//   database_id: 4922 }

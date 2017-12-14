@@ -1,139 +1,138 @@
+/*global fetch*/
 import 'whatwg-fetch'
 import classNames from 'classnames'
 import React from 'react'
 import { Panel, FormGroup, ControlLabel, InputGroup, FormControl, 
   Row, Col, Table, Button, ButtonToolbar } from 'react-bootstrap'
+import { watchStockTimeout, tickerSearchTimeout } from '../server/config'
 
 export default class StockFinder extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      currentStockValues: {
-        ticker: '--',
-        open: 0,
-        high: 0,
-        low: 0,
-        close: 0,
-        volume: 0, 
-      },
-      watchButton: {
-        title: 'Watch',
-        style: 'primary'
-      },
-      currentState: 'idle'
+      isFetching: false,
+      watchFetchTimeoutId: undefined,
+      searchFetchTimeoutId: undefined,
+      tickerInputValue: '',
+      stock: null,
+      wasLastSearchSuccess: undefined,
     }
-    this.onClickWatch = this.onClickWatch.bind(this)
-    this.resetWatchButton = this.resetWatchButton.bind(this)
-    this.setWatchWorking = this.setWatchWorking.bind(this)
-    this.timeoutId = undefined
+    // this.onClickWatch = this.onClickWatch.bind(this)
+    // this.handleWatchResponse = this.handleWatchResponse.bind(this)
+    this.onTickerInputChange = this.onTickerInputChange.bind(this)
+    this.handleSearchResponse = this.handleSearchResponse.bind(this)
+    this.getWatchButtonStyle = this.getWatchButtonStyle.bind(this)
   }
   
-  setWatchFeedback(err, data) {
-    let watchStyle
-    let watchTitle
-    let currentState
-    this.timeoutId = setTimeout(this.resetWatchButton, 1500)
-    if (err) {
-      watchStyle = 'danger'
-      watchTitle = err
-      currentState = 'error'
-    } else {
-      watchStyle = 'success'
-      watchTitle = 'Success!'
-      currentState = 'success'
-      this.props.onAddStock()
-    }
-    this.setState({
-      watchButton: {
-        style: watchStyle,
-        title: watchTitle,
-      },
-      currentStockValues: {
-          ticker: data ? data.ticker : 'Err',
-          open: data ? data.adj_open : 'Err',
-          high: data ? data.adj_high : 'Err',
-          low: data ? data.adj_low : 'Err',
-          close: data ? data.adj_close : 'Err',
-          volume: data ? data.adj_volume : 'Err',
-      },
-      currentState: currentState,
-    })
-  }
+  // handleWatchResponse(data, err) {
+  //   clearTimeout(this.state.watchFetchTimeoutId)
+  //   if (err) {
+  //     // TODO
+  //     return
+  //   }
+  //   this.setState({isFetching: false, tickerInputValue: ''})
+  //   // TODO
+  // }
   
-  setWatchWorking() {
-    this.setState({
-      watchButton: {
-        style: 'default',
-        title: 'Working...',
-      },
-      currentState: 'working'
-    })
-  }
+  // handleTimeout() {
+  //   // TODO
+  // }
   
-  resetWatchButton() {
-    this.setState({
-      watchButton: {
-        style: 'primary',
-        title: 'Watch',
-      },
-      currentState: 'idle'
-    })
-  }
-  
-  onClickWatch() {
-    clearTimeout(this.timeoutId)
-    if (this.state.currentState === 'working') {
+  handleSearchResponse(data) {
+    if (data.err) {
+      this.setState({stock: null, wasLastSearchSuccess: false})
       return
     }
-    this.setWatchWorking()
-    const ticker = this.stockWatch.value
-    fetch('/api/stocks', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ticker: ticker}),
-    }).then((response) => {
-      response.json().then(parsedRes => {
-        this.setWatchFeedback(parsedRes.err, parsedRes.data)
-      })
-    })
-    .catch(err => {
-      this.setWatchFeedback("Net Error", null)
-    })
+    this.setState({stock: data.data, wasLastSearchSuccess: true})
+  }
+
+  onTickerInputChange(e) {
+    clearTimeout(this.state.searchFetchTimeoutId)
+    const searchString = e.target.value
+    if (searchString.match(/\w*\.?\w*$/) && searchString.length < 6) {
+      const t = setTimeout(() => {
+        console.log("Searching for: ", this.state.tickerInputValue)
+        this.setState({isFetching: true})
+        if (this.state.tickerInputValue) {
+          fetch(`/api/stocks/lookup/${searchString}`)
+            .then((res) => {
+              return res.json()
+            }).then((json) => {
+              this.handleSearchResponse(json)
+              this.setState({isFetching: false})
+            }).catch((err) => {
+              // TODO
+              this.setState({isFetching: false})
+              console.log(err)
+            })
+        } else {
+          this.setState({isFetching: false, stock: null, wasLastSearchSuccess: undefined})
+        }
+      }, tickerSearchTimeout)
+      this.setState({searchFetchTimeoutId: t, tickerInputValue: searchString})
+    }
   }
   
+  getWatchButtonStyle() {
+    switch(this.state.wasLastSearchSuccess) {
+      case true:
+        return 'success'
+      case false:
+        return 'danger'
+      default:
+        return 'info'
+    }
+  }
+  
+  // onClickWatch() {
+  //   clearTimeout(this.state.watchFetchTimeoutId)
+  //   const ticker = this.stockWatch.value
+  //   const t = setTimeout(this.handleTimeout, watchStockTimeout)
+  //   this.setState({isFetching: true, watchFetchTimeoutId: t})
+    
+  //   fetch('/api/stocks', {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify({ ticker }),
+  //   }).then((response) => {
+  //     response.json().then((parsedRes) => {
+  //       this.handleWatchResponse(parsedRes.data, parsedRes.err)
+  //     })
+  //   }).catch((err) => {
+  //     this.handleWatchResponse(null, `Network Error: ${err}`)
+  //   })
+  // }
+  
   render() {
+    const tickerInputStyle = { width: 76 }
     return (
       <Panel header="Stock Finder">
         <Row>
-          <Col xs={6} sm={4} md={3} lg={3}>
+          <Col xs={2} sm={2} md={2} lg={2}>
             <FormGroup>
               <ControlLabel>Ticker</ControlLabel>
                 <InputGroup>
                   <FormControl 
+                    style={tickerInputStyle}
+                    onChange={this.onTickerInputChange}
+                    value={this.state.tickerInputValue}
                     placeholder="aapl" 
-                    inputRef={node => this.stockWatch = node}
                   />
                 </InputGroup>
               </FormGroup>
               <FormGroup>
                 <ButtonToolbar>
                   <Button 
-                    bsStyle={this.state.watchButton.style} 
-                    onClick={this.onClickWatch}>
-                      {this.state.watchButton.title}
+                    bsStyle={this.getWatchButtonStyle()} 
+                    onClick={this.onClickWatch}
+                    disable={this.state.wasLastSearchSuccess ? "true" : "false"}>
+                      Watch
                   </Button>
                 </ButtonToolbar>
               </FormGroup>
           </Col>
           <Col >
-            <StockInfo 
-              ticker={this.state.currentStockValues.ticker}
-              open={this.state.currentStockValues.open}
-              high={this.state.currentStockValues.high}
-              low={this.state.currentStockValues.low}
-              close={this.state.currentStockValues.close}
-              volume={this.state.currentStockValues.volume}
-            />
+            <StockInfo stock={this.state.stock} />
           </Col>
         </Row>
       </Panel>
@@ -143,32 +142,39 @@ export default class StockFinder extends React.Component {
 
 const StockInfo = (props) => {
   
-  const classes = classNames({
-    'green-font': props.open < props.close,
-    'red-font': props.open > props.close,
-    'white-font': props.open === props.close
-  })
+  const classes = () => {
+    if (!props.stock) {
+      return classNames({'white-font': true}) 
+    }
+    return classNames({
+      'green-font': props.stock.open < props.stock.close,
+      'red-font': props.stock.open > props.stock.close,
+      'white-font': props.stock.open === props.stock.close
+    })
+  } 
   
   return(
-    <Table responsive striped bordered condensed hover>
+    <Table responsive condensed>
       <thead>
         <tr>
-          <th>Ticker</th>
-          <th>Open</th>
-          <th>Close</th>
-          <th>Low</th>
-          <th>High</th>
-          <th>Volume</th>
+          <th className="col-md-1">Ticker</th>
+          <th className="col-md-1">Last</th>
+          <th className="col-md-1">Open</th>
+          <th className="col-md-1">Close</th>
+          <th className="col-md-1">Low</th>
+          <th className="col-md-1">High</th>
+          <th className="col-md-1">Volume</th>
         </tr>
       </thead>
       <tbody>
-        <tr className={props.open > props.close ? 'red-font' : 'green-font'}>
-          <td>{props.ticker}</td>
-          <td>{props.open.toFixed(2)}</td>
-          <td>{props.close.toFixed(2)}</td>
-          <td>{props.high.toFixed(2)}</td>
-          <td>{props.low.toFixed(2)}</td>
-          <td>{props.volume.toLocaleString()}</td>
+        <tr className={classes()}>
+          <td>{props.stock ? props.stock.ticker : '--'}</td>
+          <td>{props.stock ? props.stock.lastRefresh : '--'}</td>
+          <td>{props.stock ? `$${props.stock.open.toFixed(2)}` : "$0.00"}</td>
+          <td>{props.stock ? `$${props.stock.close.toFixed(2)}` : "$0.00"}</td>
+          <td>{props.stock ? `$${props.stock.high.toFixed(2)}` : "$0.00"}</td>
+          <td>{props.stock ? `$${props.stock.low.toFixed(2)}` : "$0.00"}</td>
+          <td>{props.stock ? props.stock.volume.toLocaleString() : 0}</td>
         </tr>
       </tbody>
     </Table>
