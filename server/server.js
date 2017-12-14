@@ -63,7 +63,15 @@ app.post('/api/stocks', (req, res) => {
   }))
 })
 
-app.delete('/api/stocks/:id', (req, res) => {
+app.get('/api/stocks/lookup/:ticker', (req, res) => {
+  stockService.getLatestStockData(req.params.ticker, (data, err) => {
+    if (err) return res.status(err.status).json({data: null, err: err.message})
+    if (data) return res.json({data: data, err: null})
+    return res.status(500).json({data: null, err: "Internal Server Error"})
+  })
+})
+
+app.delete('/api/stocks/:ticker', (req, res) => {
   console.log(req.params.id)
 })
 
