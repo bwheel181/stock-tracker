@@ -18,6 +18,7 @@ This is a simple Node application that uses an external free to use API to track
 - MERN stack
 
 **Major TODOS**
+- [ ] Refactor react components
 - [ ] Refreshing of stocks over a day old
 - [ ] Delete ability
 - [ ] Detail view
