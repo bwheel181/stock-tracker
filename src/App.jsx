@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom'
 import StockList from './StockList'
-import StockFinder from './StockFinder'
+import Login from './Login'
 import {Navbar, Nav, NavItem, NavDropdown, MenuItem, Glyphicon} from 'react-bootstrap'
 import {LinkContainer} from 'react-router-bootstrap'
 
@@ -23,6 +23,7 @@ const Header = () => (
     <Nav pullRight>
       <NavItem><Glyphicon glyph="plus" /></NavItem>
       <NavDropdown id="user-dropdown" title={<Glyphicon glyph="option-horizontal" />}noCaret>
+        <LinkContainer to="/login"><MenuItem>Login</MenuItem></LinkContainer>
         <MenuItem>Logout</MenuItem>
       </NavDropdown>
     </Nav>
@@ -54,6 +55,7 @@ const RoutedApp = () => (
         <Switch>
           <Route exact path="/" component={StockList} />
           <Route path="/watcher" component={StockList} />
+          <Route path="/login" component={Login} />
         </Switch>
       </App>
     </div>

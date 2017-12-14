@@ -1,4 +1,5 @@
 import 'whatwg-fetch'
+import classNames from 'classnames'
 import React from 'react'
 import { Panel, FormGroup, ControlLabel, InputGroup, FormControl, 
   Row, Col, Table, Button, ButtonToolbar } from 'react-bootstrap'
@@ -140,7 +141,15 @@ export default class StockFinder extends React.Component {
   }
 }
 
-const StockInfo = (props) => (
+const StockInfo = (props) => {
+  
+  const classes = classNames({
+    'green-font': props.open < props.close,
+    'red-font': props.open > props.close,
+    'white-font': props.open === props.close
+  })
+  
+  return(
     <Table responsive striped bordered condensed hover>
       <thead>
         <tr>
@@ -163,4 +172,6 @@ const StockInfo = (props) => (
         </tr>
       </tbody>
     </Table>
-)
+  )
+
+}

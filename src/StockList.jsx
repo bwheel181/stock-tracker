@@ -1,4 +1,5 @@
 import 'whatwg-fetch'
+import 'classnames'
 import classNames from 'classnames'
 import React from 'react'
 import StockFilter from './StockFilter'
@@ -56,7 +57,7 @@ export default class StockList extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="shadow">
         <Panel collapsible header="Filter">
           <StockFilter
             setFilter={this.setFilter}
@@ -67,6 +68,7 @@ export default class StockList extends React.Component {
           stocks={this.state.stockList}
           deleteStock={this.deleteStock}
         />
+        <hr />
         <StockFinder onAddStock={this.loadData}/>
       </div>
     )
@@ -81,6 +83,7 @@ const StockRow = (props) => {
   const classes = classNames({
     'red-font': props.stock.open > props.stock.close,
     'green-font': props.stock.open < props.stock.close,
+    'white-font': props.stock.open === props.stock.close,
   })
 
   return (
@@ -96,7 +99,7 @@ const StockRow = (props) => {
   )
 }
 
-function StockTable(props) {
+const StockTable = (props) => {
   const stockRows = props.stocks.map(stock =>
     <StockRow key={stock._id} stock={stock} deleteStock={props.deleteStock} />)
   

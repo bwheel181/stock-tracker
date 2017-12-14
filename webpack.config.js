@@ -31,6 +31,13 @@ module.exports = {
           public: 'stock-lister-bjw181.c9users.io',
         },
       },
+      '/login': {
+        target: {
+          host: '0.0.0.0',
+          port: 8080,
+          public: 'stock-lister-bjw181.c9users.io',
+        }
+      }
     },
     historyApiFallback: true,
   },
