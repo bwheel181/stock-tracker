@@ -23,7 +23,7 @@ This is a simple Node application that uses an external free to use API to track
 - [ ] Delete ability
 - [ ] Detail view
 - [ ] Reports with D3 charting
-- [ ] 'Search' functionality to display data page and 'Watch' to add data to Mongo
+- [x] 'Search' functionality to display data page and 'Watch' to add data to Mongo
 - [ ] Filter functionality
 - [ ] Session management/User authentication
 - [ ] Allow user to customize what stock information fields are available
@@ -35,7 +35,7 @@ This is a simple Node application that uses an external free to use API to track
 - [ ] Improve stock service
 - [ ] Set stock table maxHeight dynamically to fit in any screen height
 - [x] Move `StockFinder` to `StockList`
-- [ ] Make table scrollable after 10 stocks have been added
+- [x] Make table scrollable after 10 stocks have been added
 - [ ] Add sorting to the stock fields
 - [x] Mark close with 'green' if above open and 'red' if below open
 - [x] Change volume number to 'comma'd' number
