@@ -15,13 +15,12 @@ export default class StockFinder extends React.Component {
       searchFetchTimeoutId: undefined,
       tickerInputValue: '',
       wasLastSearchSuccess: undefined,
+      searchErrMessage: 'Start typing to search for a stock',
       stock: null,
       
     }
     // this.onClickWatch = this.onClickWatch.bind(this)
-    // this.handleWatchResponse = this.handleWatchResponse.bind(this)
     this.onTickerInputChange = this.onTickerInputChange.bind(this)
-    this.handleSearchResponse = this.handleSearchResponse.bind(this)
     this.getWatchButtonStyle = this.getWatchButtonStyle.bind(this)
   }
   
@@ -38,19 +37,11 @@ export default class StockFinder extends React.Component {
   // handleTimeout() {
   //   // TODO
   // }
-  
-  handleSearchResponse(data) {
-    if (data.err) {
-      this.setState({stock: null, wasLastSearchSuccess: false})
-      return
-    }
-    this.setState({stock: data.data, wasLastSearchSuccess: true})
-  }
 
   onTickerInputChange(e) {
     clearTimeout(this.state.searchFetchTimeoutId)
     const searchString = e.target.value
-    if (searchString.match(/\w*\.?\w*$/) && searchString.length < 6) {
+    if (searchString.match(/\w*\.?\w*$/) && searchString.length <= 5) {
       const t = setTimeout(() => {
         console.log("Searching for: ", this.state.tickerInputValue)
         this.setState({isFetching: true})
@@ -59,15 +50,36 @@ export default class StockFinder extends React.Component {
             .then((res) => {
               return res.json()
             }).then((json) => {
-              this.handleSearchResponse(json)
-              this.setState({isFetching: false})
+              if (json.err) {
+                this.setState({
+                  stock: null,
+                  wasLastSearchSuccess: false,
+                  isFetching: false,
+                  searchErrMessage: json.err,
+                })
+              } else {
+                this.setState({
+                  stock: json.data, 
+                  wasLastSearchSuccess: true, 
+                  isFetching: false,
+                  searchErrMessage: '',
+                }) 
+              }
             }).catch((err) => {
-              // TODO
-              this.setState({isFetching: false})
-              console.log(err)
+              this.setState({
+                stock: null, 
+                wasLastSearchSuccess: false, 
+                isFetching: false,
+                searchErrMessage: err,
+              })
             })
         } else {
-          this.setState({isFetching: false, stock: null, wasLastSearchSuccess: undefined})
+          this.setState({
+            stock: null, 
+            wasLastSearchSuccess: false, 
+            isFetching: false,
+            searchErrMessage: 'Start typing to search for a stock',
+          })
         }
       }, tickerSearchTimeout)
       this.setState({searchFetchTimeoutId: t, tickerInputValue: searchString})
@@ -81,7 +93,7 @@ export default class StockFinder extends React.Component {
       case false:
         return 'danger'
       default:
-        return 'info'
+        return 'danger'
     }
   }
   
@@ -133,7 +145,11 @@ export default class StockFinder extends React.Component {
               </FormGroup>
           </Col>
           <Col >
-            <StockInfo stock={this.state.stock} />
+            <StockInfo 
+              stock={this.state.stock} 
+              searchSuccess={this.state.wasLastSearchSuccess} 
+              errMessage={this.state.searchErrMessage} 
+            />
           </Col>
         </Row>
       </Panel>
@@ -142,7 +158,29 @@ export default class StockFinder extends React.Component {
 }
 
 const StockInfo = (props) => {
-  
+  return(
+    <Table responsive condensed>
+      <thead>
+        <tr>
+          <th className="col-md-1">{props.stock ? "Ticker" : ''}</th>
+          <th className="col-md-1">{props.stock ? "Name" : ''}</th>
+          <th className="col-md-1">{props.stock ? "Open" : ''}</th>
+          <th className="col-md-1">{props.stock ? "Close" : ''}</th>
+          <th className="col-md-1">{props.stock ? "Low" : ''}</th>
+          <th className="col-md-1">{props.stock ? "High" : ''}</th>
+          <th className="col-md-1">{props.stock ? "Volume" : ''}</th>
+        </tr>
+      </thead>
+      <StockDataTable 
+        stock={props.stock} 
+        searchSuccess={props.searchSuccess} 
+        errMessage={props.errMessage}
+      />
+    </Table>
+  )
+}
+
+const StockDataTable = (props) => {
   const classes = () => {
     if (!props.stock) {
       return classNames({'white-font': true}) 
@@ -152,33 +190,31 @@ const StockInfo = (props) => {
       'red-font': props.stock.open > props.stock.close,
       'white-font': props.stock.open === props.stock.close
     })
-  } 
+  }
   
-  return(
-    <Table responsive condensed>
-      <thead>
-        <tr>
-          <th className="col-md-1">Ticker</th>
-          <th className="col-md-1">Last</th>
-          <th className="col-md-1">Open</th>
-          <th className="col-md-1">Close</th>
-          <th className="col-md-1">Low</th>
-          <th className="col-md-1">High</th>
-          <th className="col-md-1">Volume</th>
-        </tr>
-      </thead>
+  const emptyStyle = {
+    fontSize: 25
+  }
+  
+  if (props.searchSuccess) {
+    return (
       <tbody>
         <tr className={classes()}>
-          <td>{props.stock ? props.stock.ticker : '--'}</td>
-          <td>{props.stock ? props.stock.lastRefresh : '--'}</td>
-          <td>{props.stock ? `$${props.stock.open.toFixed(2)}` : "$0.00"}</td>
-          <td>{props.stock ? `$${props.stock.close.toFixed(2)}` : "$0.00"}</td>
-          <td>{props.stock ? `$${props.stock.high.toFixed(2)}` : "$0.00"}</td>
-          <td>{props.stock ? `$${props.stock.low.toFixed(2)}` : "$0.00"}</td>
-          <td>{props.stock ? props.stock.volume.toLocaleString() : 0}</td>
+          <td>{props.stock.ticker }</td>
+          <td>{ props.stock.name }</td>
+          <td>{`$${props.stock.open.toFixed(2)}`}</td>
+          <td>{`$${props.stock.close.toFixed(2)}`}</td>
+          <td>{`$${props.stock.high.toFixed(2)}`}</td>
+          <td>{`$${props.stock.low.toFixed(2)}`}</td>
+          <td>{props.stock.volume.toLocaleString()}</td>
         </tr>
+      </tbody>    
+    )      
+  } else {
+    return (
+      <tbody style={emptyStyle}>
+        <tr align="left"><td colspan="7">{props.errMessage}</td></tr>
       </tbody>
-    </Table>
-  )
-
+    )
+  }
 }

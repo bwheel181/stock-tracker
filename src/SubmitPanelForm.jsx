@@ -7,7 +7,8 @@ import { Panel, FormControl, Form, ControlLabel,
 // TODO Fix the nested form here. OnSumbmit doesn't work with react-bootstrap Form
 
 const defaultStyle = {
-  maxWidth: 300
+  maxWidth: 300,
+  
 }
 
 export default class SubmitPanelForm extends React.Component {

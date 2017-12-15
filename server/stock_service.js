@@ -57,7 +57,14 @@ class QuandlDataParser {
       obj[key] = values[i]
     }
     obj.ticker = data.dataset_code
-    obj.lastRefresh = data.newest_available_date
+    obj.lastRefresh = new Date(data.newest_available_date)
+    obj.date = new Date(data.date)
+    if (data.name.indexOf('(') !== -1) {
+      obj.name = data.name.slice(0, data.name.indexOf('(')).trim() 
+    } else {
+      obj.name = "Unknown"
+    }
+    console.log(obj)
     return obj
   }
 }
