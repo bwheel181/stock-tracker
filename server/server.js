@@ -44,23 +44,7 @@ app.get('/api/stocks', (req, res) => {
 
 app.post('/api/stocks', (req, res) => {
   const ticker = req.body.ticker
-  stockService.getStockData(ticker, ((stockData, err) => {
-    if (err) {
-      res.status(500).json({data: null, err: err})
-      return
-    }
-    db.collection('stocks')
-    .updateOne({
-      ticker: {$regex: new RegExp(ticker, 'i')}}, 
-      stockData, 
-      {upsert: true})
-    .then(updated => {
-      res.json({data: stockData, err: null})
-    })
-    .catch(err => {
-      res.status(500).json({data: null, err: 'Error'})
-    })
-  }))
+  console.log('Not implemented')
 })
 
 app.get('/api/stocks/lookup/:ticker', (req, res) => {
