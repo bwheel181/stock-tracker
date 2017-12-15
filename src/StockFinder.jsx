@@ -6,6 +6,8 @@ import { Panel, FormGroup, ControlLabel, InputGroup, FormControl,
   Row, Col, Table, Button, ButtonToolbar } from 'react-bootstrap'
 import { watchStockTimeout, tickerSearchTimeout } from '../server/config'
 
+const idleSearchStateMessage = 'Start typing to search for a stock'
+
 export default class StockFinder extends React.Component {
   constructor(props) {
     super(props)
@@ -15,28 +17,14 @@ export default class StockFinder extends React.Component {
       searchFetchTimeoutId: undefined,
       tickerInputValue: '',
       wasLastSearchSuccess: undefined,
-      searchErrMessage: 'Start typing to search for a stock',
+      searchErrMessage: idleSearchStateMessage,
       stock: null,
       
     }
-    // this.onClickWatch = this.onClickWatch.bind(this)
+    this.onClickWatch = this.onClickWatch.bind(this)
     this.onTickerInputChange = this.onTickerInputChange.bind(this)
     this.getWatchButtonStyle = this.getWatchButtonStyle.bind(this)
   }
-  
-  // handleWatchResponse(data, err) {
-  //   clearTimeout(this.state.watchFetchTimeoutId)
-  //   if (err) {
-  //     // TODO
-  //     return
-  //   }
-  //   this.setState({isFetching: false, tickerInputValue: ''})
-  //   // TODO
-  // }
-  
-  // handleTimeout() {
-  //   // TODO
-  // }
 
   onTickerInputChange(e) {
     clearTimeout(this.state.searchFetchTimeoutId)
@@ -78,7 +66,7 @@ export default class StockFinder extends React.Component {
             stock: null, 
             wasLastSearchSuccess: false, 
             isFetching: false,
-            searchErrMessage: 'Start typing to search for a stock',
+            searchErrMessage: idleSearchStateMessage,
           })
         }
       }, tickerSearchTimeout)
@@ -97,24 +85,9 @@ export default class StockFinder extends React.Component {
     }
   }
   
-  // onClickWatch() {
-  //   clearTimeout(this.state.watchFetchTimeoutId)
-  //   const ticker = this.stockWatch.value
-  //   const t = setTimeout(this.handleTimeout, watchStockTimeout)
-  //   this.setState({isFetching: true, watchFetchTimeoutId: t})
-    
-  //   fetch('/api/stocks', {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     body: JSON.stringify({ ticker }),
-  //   }).then((response) => {
-  //     response.json().then((parsedRes) => {
-  //       this.handleWatchResponse(parsedRes.data, parsedRes.err)
-  //     })
-  //   }).catch((err) => {
-  //     this.handleWatchResponse(null, `Network Error: ${err}`)
-  //   })
-  // }
+  onClickWatch() {
+    console.log("Not implemented")
+  }
   
   render() {
     const tickerInputStyle = { width: 76 }
@@ -147,8 +120,8 @@ export default class StockFinder extends React.Component {
           <Col >
             <StockInfo 
               stock={this.state.stock} 
-              searchSuccess={this.state.wasLastSearchSuccess} 
-              errMessage={this.state.searchErrMessage} 
+              wasLastSearchSuccess={this.state.wasLastSearchSuccess} 
+              searchResMessage={this.state.searchErrMessage} 
             />
           </Col>
         </Row>
@@ -162,19 +135,18 @@ const StockInfo = (props) => {
     <Table responsive condensed>
       <thead>
         <tr>
-          <th className="col-md-1">{props.stock ? "Ticker" : ''}</th>
-          <th className="col-md-1">{props.stock ? "Name" : ''}</th>
-          <th className="col-md-1">{props.stock ? "Open" : ''}</th>
-          <th className="col-md-1">{props.stock ? "Close" : ''}</th>
-          <th className="col-md-1">{props.stock ? "Low" : ''}</th>
-          <th className="col-md-1">{props.stock ? "High" : ''}</th>
-          <th className="col-md-1">{props.stock ? "Volume" : ''}</th>
+          <th className="col-md-1">{props.wasLastSearchSuccess ? "Name" : ''}</th>
+          <th className="col-md-1">{props.wasLastSearchSuccess ? "Open" : ''}</th>
+          <th className="col-md-1">{props.wasLastSearchSuccess ? "Close" : ''}</th>
+          <th className="col-md-1">{props.wasLastSearchSuccess ? "Low" : ''}</th>
+          <th className="col-md-1">{props.wasLastSearchSuccess ? "High" : ''}</th>
+          <th className="col-md-1">{props.wasLastSearchSuccess ? "Volume" : ''}</th>
         </tr>
       </thead>
       <StockDataTable 
         stock={props.stock} 
-        searchSuccess={props.searchSuccess} 
-        errMessage={props.errMessage}
+        wasLastSearchSuccess={props.wasLastSearchSuccess} 
+        searchResMessage={props.searchResMessage}
       />
     </Table>
   )
@@ -182,9 +154,6 @@ const StockInfo = (props) => {
 
 const StockDataTable = (props) => {
   const classes = () => {
-    if (!props.stock) {
-      return classNames({'white-font': true}) 
-    }
     return classNames({
       'green-font': props.stock.open < props.stock.close,
       'red-font': props.stock.open > props.stock.close,
@@ -196,11 +165,10 @@ const StockDataTable = (props) => {
     fontSize: 25
   }
   
-  if (props.searchSuccess) {
+  if (props.wasLastSearchSuccess) {
     return (
       <tbody>
         <tr className={classes()}>
-          <td>{props.stock.ticker }</td>
           <td>{ props.stock.name }</td>
           <td>{`$${props.stock.open.toFixed(2)}`}</td>
           <td>{`$${props.stock.close.toFixed(2)}`}</td>
@@ -213,7 +181,7 @@ const StockDataTable = (props) => {
   } else {
     return (
       <tbody style={emptyStyle}>
-        <tr align="left"><td colspan="7">{props.errMessage}</td></tr>
+        <tr align="left"><td colspan="7">{props.searchResMessage}</td></tr>
       </tbody>
     )
   }
