@@ -33,7 +33,6 @@ This is a simple Node application that uses an external free to use API to track
 - [ ] Fix minor bugs
 - [ ] Linter run-through
 - [ ] Improve stock service
-- [ ] Set stock table maxHeight dynamically to fit in any screen height
 - [x] Move `StockFinder` to `StockList`
 - [x] Make table scrollable after 10 stocks have been added
 - [ ] Add sorting to the stock fields
