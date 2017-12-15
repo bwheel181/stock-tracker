@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 const Schema = mongoose.Schema
 
-const Stock = new Schema({
+const StockSchema = new Schema({
   date: Date,
   open: Number,
   high: Number,
@@ -15,10 +15,14 @@ const Stock = new Schema({
   adj_low: Number,
   adj_close: Number,
   adj_volume: Number,
-  ticker: String,
+  ticker: {type: String, index: true, required: true},
   lastRefresh: Date,
-  name: Number,
+  name: String,
 })
+
+const Stock = mongoose.model('Stock', StockSchema)
+
+export {Stock, StockSchema}
 
 //   date: '2017-12-14',
 //   open: 1045,

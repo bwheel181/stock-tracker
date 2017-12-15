@@ -23,6 +23,7 @@ export default class SubmitPanelForm extends React.Component {
         key={label.id} 
         id={label.id} 
         name={label.name}
+        type={label.type}
         title={label.title}
         placeholder={label.placeholder}
         onInputChange={this.onInputChange}

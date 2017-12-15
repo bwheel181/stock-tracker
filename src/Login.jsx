@@ -1,8 +1,5 @@
-/*global fetch */
-import 'whatwg-fetch'
 import React from 'react'
 import SubmitPanelForm from './SubmitPanelForm'
-
 
 export default class Login extends React.Component {
   constructor() {

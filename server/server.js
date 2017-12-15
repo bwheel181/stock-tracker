@@ -2,7 +2,9 @@ import 'babel-polyfill'
 import express from 'express'
 import bodyParser from 'body-parser'
 import path from 'path'
-import { MongoClient, ObjectId } from 'mongodb'
+import mongoose from 'mongoose'
+import Stock from './models/stock'
+import User from './models/user'
 import SourceMapSupport from 'source-map-support'
 import StockService from './stock_service'
 
@@ -14,32 +16,28 @@ SourceMapSupport.install()
 const app = express()
 const stockService = new StockService()
 
-let db
-MongoClient.connect('mongodb://localhost/stocktracker').then((conn) => {
-  db = conn
-  app.listen(8080, () => {
-    console.log('App started on port 8080')
-  })
-}).catch((err) => {
-  console.log('ERROR: ', err)
+mongoose.connect('mongodb://localhost/stocktracker', {
+  useMongoClient: true,
+  autoIndex: true,
+  reconnectTries: Number.MAX_VALUE,
+  reconnectInterval: 500,
+  poolSize: process.env.NODE_ENV === 'development' ? 2 : 10,
+  promiseLibrary: global.Promise,
+  bufferMaxEntries: 0
+}).then((conn) => {
+  console.log(`Database connected on port ${conn.port}`)
+})
+
+app.listen(8080, () => {
+  console.log('Application started on port 8080')
 })
 
 app.use(express.static('static'))
 app.use(bodyParser.json())
   
 app.get('/api/stocks', (req, res) => {
-  const filter = {}
-  if (req.query.price_lte || req.query.price_gte) filter.price = {}
-  if (req.query.price_lte) filter.adj_close.$lte = parseInt(req.query.price_lte, 10)
-  if (req.query.price_gte) filter.adj_close.$gte = parseInt(req.query.price_gte, 10)
-  db.collection('stocks').find(filter).toArray().then((stockList) => {
-    const metadata = { total_count: stockList.length }
-    res.json({metadata: metadata, stockList: stockList, error: null})
-  })
-    .catch((err) => {
-      console.log(err)
-      res.status(500).json({metadata: null, stockList: null, error: err})
-    })
+  // TODO Implement filter
+  res.json({message: "Not implemented"})
 })
 
 app.post('/api/stocks', (req, res) => {
@@ -56,19 +54,34 @@ app.get('/api/stocks/lookup/:ticker', (req, res) => {
 })
 
 app.delete('/api/stocks/:ticker', (req, res) => {
-  console.log(req.params.id)
+  res.json({message: "Not implemented"})
 })
 
 app.post('/login', (req, res) => {
-  db.collection('users').find({email: req.body.email}).limit(1).next().then(user => {
-    if (!user) {
-      res.status(404).json({message: `User ${req.body.email} could not be found`, data: null})
-      return
-    }
-    //Authenticate user and set up session
-    res.json({message: "OK", data: {}})
-  }).catch(err => {
-    res.status(500).json({message: `Internal Server Error: ${err}`, data: null})
+  if (!req.body.email) return res.status(400).json({message: "POST email is missing"})
+  if (!req.body.password) return res.status(400).json({message: "POST password is missing"})
+  User.findOne({email: req.body.email}).then((user, err) => {
+    if (err) return res.status(500).json({message: err})
+    if (!user) return res.status(422).json({message: "Could not find user"})
+    user.comparePassword(req.body.password, (err, match) => {
+      if (err) return res.status(500).json({message: "Could not authenticate user"})
+      if (!match) return res.status(422).json({message: "Incorrect password"})
+      return res.json({message: "Success"})
+    })
+  })
+})
+
+app.post('/signup', (req, res) => {
+  if (!req.body.email) return res.status(400).json({message: "POST email is missing"})
+  if (!req.body.password) return res.status(400).json({message: "POST password is missing"})
+  User.findOne({email: req.body.email}).then((user, err) => {
+    if (err) return res.status(500).json({message: err})
+    if (user) return res.status(422).json({message: "User already exists"})
+    const newUser = new User({email: req.body.email, password: req.body.password})
+    newUser.save((err) => {
+      if (err) return res.status(500).json({message: err})
+      return res.json({message: 'success'})
+    })
   })
 })
 

@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon -w dist dist/server.js",
+    "start": "export NODE_ENV=dev&& nodemon -w dist dist/server.js",
     "compile": "webpack",
     "watch": "webpack-dev-server --hot --inline",
     "compile-server": "babel server server/models --presets es2015-node4 --out-dir dist --source-maps",
@@ -28,6 +28,7 @@
   "dependencies": {
     "babel-polyfill": "^6.26.0",
     "babel-register": "^6.26.0",
+    "bcrypt": "^1.0.3",
     "body-parser": "^1.18.2",
     "bootstrap": "^3.3.7",
     "classnames": "^2.2.5",
