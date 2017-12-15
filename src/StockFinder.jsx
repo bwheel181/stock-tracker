@@ -22,8 +22,16 @@ export default class StockFinder extends React.Component {
       
     }
     this.onClickWatch = this.onClickWatch.bind(this)
+    this.handleSearchResponse = this.handleSearchResponse.bind(this)
     this.onTickerInputChange = this.onTickerInputChange.bind(this)
     this.getWatchButtonStyle = this.getWatchButtonStyle.bind(this)
+  }
+  
+  handleSearchResponse(stock, err) {
+    const wasLastSearchSuccess = !err
+    const searchErrMessage = err || ''
+    const isFetching = false
+    this.setState({ stock, wasLastSearchSuccess, isFetching, searchErrMessage })
   }
 
   onTickerInputChange(e) {
@@ -39,35 +47,15 @@ export default class StockFinder extends React.Component {
               return res.json()
             }).then((json) => {
               if (json.err) {
-                this.setState({
-                  stock: null,
-                  wasLastSearchSuccess: false,
-                  isFetching: false,
-                  searchErrMessage: json.err,
-                })
+                this.handleSearchResponse(null, json.err)
               } else {
-                this.setState({
-                  stock: json.data, 
-                  wasLastSearchSuccess: true, 
-                  isFetching: false,
-                  searchErrMessage: '',
-                }) 
+                this.handleSearchResponse(json.data, null)
               }
             }).catch((err) => {
-              this.setState({
-                stock: null, 
-                wasLastSearchSuccess: false, 
-                isFetching: false,
-                searchErrMessage: err,
-              })
+              this.handleSearchResponse(null, err)
             })
         } else {
-          this.setState({
-            stock: null, 
-            wasLastSearchSuccess: false, 
-            isFetching: false,
-            searchErrMessage: idleSearchStateMessage,
-          })
+          this.handleSearchResponse(null, idleSearchStateMessage)
         }
       }, tickerSearchTimeout)
       this.setState({searchFetchTimeoutId: t, tickerInputValue: searchString})
