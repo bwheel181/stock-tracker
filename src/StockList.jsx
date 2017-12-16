@@ -13,7 +13,6 @@ export default class StockList extends React.Component {
     super()
     this.state = { 
       stockList: [],
-      classNames: classNames()
     }
     this.setFilter = this.setFilter.bind(this)
     this.deleteStock = this.deleteStock.bind(this)
@@ -45,7 +44,9 @@ export default class StockList extends React.Component {
           if (data.err) {
             // TODO
           }
-          this.setState({stockList: data.stockList})
+          if (data.stockList) {
+            this.setState({stockList: data.stockList}) 
+          }
         })
       }
     })
@@ -75,6 +76,30 @@ export default class StockList extends React.Component {
   }
 }
 
+const StockTable = (props) => {
+  const stockRows = props.stocks.map(stock =>
+    <StockRow key={stock._id} stock={stock} deleteStock={props.deleteStock} />)
+  
+  return (
+    <div className="main-table">
+      <Table bordered condensed hover responsive>
+        <thead>
+          <tr>
+            <th>Ticker</th>
+            <th>Open</th>
+            <th>Close</th>
+            <th>Low</th>
+            <th>High</th>
+            <th>Volume</th>
+            <th />
+          </tr>
+        </thead>
+        <tbody>{stockRows}</tbody>
+      </Table>
+    </div>
+  )
+}
+
 const StockRow = (props) => {
   function onDeleteClick() {
     props.deleteStock(props.stock.ticker)
@@ -102,29 +127,5 @@ const StockRow = (props) => {
         </button>
       </td>
     </tr>
-  )
-}
-
-const StockTable = (props) => {
-  const stockRows = props.stocks.map(stock =>
-    <StockRow key={stock._id} stock={stock} deleteStock={props.deleteStock} />)
-  
-  return (
-    <div className="main-table">
-      <Table bordered condensed hover responsive>
-        <thead>
-          <tr>
-            <th>Ticker</th>
-            <th>Open</th>
-            <th>Close</th>
-            <th>Low</th>
-            <th>High</th>
-            <th>Volume</th>
-            <th />
-          </tr>
-        </thead>
-        <tbody>{stockRows}</tbody>
-      </Table>
-    </div>
   )
 }

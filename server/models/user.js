@@ -7,7 +7,7 @@ const SALT_WORK_FACTOR = 10
 const UserSchema = new Schema({
   email: { type: String, required: true, index: true },
   password: { type: String, required: true },
-  stocks: {type: [StockSchema], default: undefined},
+  stocks: {type: [String], default: undefined},
 })
 
 UserSchema.pre('save', function(next) {

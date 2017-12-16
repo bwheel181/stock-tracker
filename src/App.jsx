@@ -4,6 +4,8 @@ import PropTypes from 'prop-types'
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom'
 import StockList from './StockList'
 import Login from './Login'
+import Logout from './Logout'
+import Index from './Index'
 import Signup from './Signup'
 import {Navbar, Nav, NavItem, NavDropdown, MenuItem, Glyphicon} from 'react-bootstrap'
 import {LinkContainer} from 'react-router-bootstrap'
@@ -26,7 +28,7 @@ const Header = () => (
       <NavDropdown id="user-dropdown" title={<Glyphicon glyph="option-horizontal" />}noCaret>
         <LinkContainer to="/login"><MenuItem>Login</MenuItem></LinkContainer>
         <LinkContainer to="/signup"><MenuItem>Sign up</MenuItem></LinkContainer>
-        <MenuItem>Logout</MenuItem>
+        <LinkContainer to="/logout"><MenuItem>Logout</MenuItem></LinkContainer>
       </NavDropdown>
     </Nav>
   </Navbar>
@@ -55,9 +57,10 @@ const RoutedApp = () => (
     <div>
       <App>
         <Switch>
-          <Route exact path="/" component={StockList} />
+          <Route exact path="/" component={Index} />
           <Route path="/watcher" component={StockList} />
           <Route path="/login" component={Login} />
+          <Route path="/logout" component={Logout} />
           <Route path="/signup" component={Signup} />
         </Switch>
       </App>
