@@ -18,6 +18,8 @@ This is a simple Node application that uses an external free to use API to track
 - MERN stack
 
 **Major TODOS**
+- [ ] Convert backend to Typescript
+- [ ] Convert frontend to Typescript
 - [ ] Refactor react components and make more reusable for other projects
 - [ ] Refreshing of stocks over a day old
 - [ ] Delete ability
