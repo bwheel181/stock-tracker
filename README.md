@@ -18,6 +18,7 @@ This is a simple Node application that uses an external free to use API to track
 - MERN stack
 
 **Major TODOS**
+- [ ] Move the Quand services to a seperate Go service
 - [ ] Convert backend to Typescript
 - [ ] Convert frontend to Typescript
 - [ ] Refactor react components and make more reusable for other projects
